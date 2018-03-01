@@ -523,6 +523,8 @@ pre {
 .post .post-content p.brief {
     overflow: hidden;
     color: #666666;
+    min-height: 90px;
+    max-height: 90px;
 }
 
 .post .post-body {
