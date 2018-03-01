@@ -281,7 +281,6 @@ pre {
     height: 140px;
     width: 100%;
     background: #fff;
-    background-position: center;
 }
 
 .main-header .banneriframe {
@@ -533,11 +532,6 @@ pre {
     overflow: hidden;
 }
 
-.post .post-body p {
-    font-size: 1em;
-    line-height: 1.5;
-}
-
 .post .post-body p img {
     max-width: 100%;
 }
@@ -580,46 +574,52 @@ pre {
 .post-content {
     font: 400 16px/1.62 "Georgia", "Xin Gothic", "Hiragino Sans GB", "Droid Sans Fallback", "Microsoft YaHei", sans-serif;
     color: #333;
+    font-size: 15px;
 }
 
 .post-content h1 {
     font-family: "Georgia", "Xin Gothic", "Hiragino Sans GB", "Droid Sans Fallback", "Microsoft YaHei", "SimSun", sans-serif;
-    color: #333;
+    color: #2c3e50;
     font-size: 1.8em;
     margin: 0.67em 0;
+    font-weight: 600;
 }
 
 .post-content h2 {
     font-family: "Georgia", "Xin Gothic", "Hiragino Sans GB", "Droid Sans Fallback", "Microsoft YaHei", "SimSun", sans-serif;
-    color: #333;
+    color: #2c3e50;
     font-size: 1.5em;
     margin: 0.83em 0;
+    font-weight: 600;
 }
 
 .post-content h3 {
     font-family: "Georgia", "Xin Gothic", "Hiragino Sans GB", "Droid Sans Fallback", "Microsoft YaHei", "SimSun", sans-serif;
-    color: #333;
+    color: #2c3e50;
     font-size: 1.17em;
-    margin: 1em 0;
+    margin: 2em 0 1em 0;
+    font-weight: 600;
 }
 
 .post-content h4 {
     font-family: "Georgia", "Xin Gothic", "Hiragino Sans GB", "Droid Sans Fallback", "Microsoft YaHei", "SimSun", sans-serif;
-    color: #333;
+    color: #2c3e50;
     font-size: 1em;
     margin: 1.6em 0 1em 0;
+    font-weight: 600;
 }
 
 .post-content h5 {
     font-family: "Georgia", "Xin Gothic", "Hiragino Sans GB", "Droid Sans Fallback", "Microsoft YaHei", "SimSun", sans-serif;
-    color: #333;
+    color: #2c3e50;
     font-size: 1em;
     margin: 1.6em 0 1em 0;
+    font-weight: 600;
 }
 
 .post-content h6 {
     font-family: "Georgia", "Xin Gothic", "Hiragino Sans GB", "Droid Sans Fallback", "Microsoft YaHei", "SimSun", sans-serif;
-    color: #333;
+    color: #2c3e50;
     font-size: 1em;
     margin: 1.6em 0 1em 0;
     font-weight: 500;
@@ -632,6 +632,10 @@ pre {
 
 .post-content p {
     font-size: 15px;
+    line-height: 1.6em;
+    margin: 1.2em 0 -1.2em;
+    padding-bottom: 1.2em;
+    word-spacing: 0.05em;
 }
 
 .post-content a {
@@ -713,6 +717,11 @@ pre {
     border-left: 3px solid #e67e22;
     padding-left: 12px;
     color: #666666;
+}
+
+.post-content blockquote p{
+    margin: 0 auto;
+    padding-bottom: 0;
 }
 
 .post-content blockquote a {
@@ -1470,7 +1479,8 @@ pre .javascript .function {
     .nav-toggle-button {
         display: none;
     }
-    .main-content{
+
+    .main-content {
         padding-left: 0 !important;
         padding-right: 0 !important;
     }
@@ -1507,6 +1517,7 @@ pre .javascript .function {
         content: "";
         margin-bottom: 10px;
     }
+
     .main-content {
         padding-left: 0 !important;
         padding-right: 15px !important;
