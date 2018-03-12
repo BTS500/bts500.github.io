@@ -29,7 +29,7 @@
     <!--Title-->
 
 
-<title>关于博客 - BTS500 | BTS500技术博客|比特股技术博客|比特股技术文档|比特股|Bitshares|BTS|比特币|以太坊|ETH|BTC</title>
+<title>Bitshares 开发者系列（1）—— Api接口的访问方式 | BTS500技术博客|比特股技术博客|比特股技术文档|比特股|Bitshares|BTS|比特币|以太坊|ETH|BTC</title>
 
 
     <link rel="alternate" href="/atom.xml" title="BTS500技术博客|比特股技术博客|比特股技术文档|比特股|Bitshares|BTS|比特币|以太坊|ETH|BTC" type="application/atom+xml">
@@ -138,9 +138,9 @@
                     <p id="process"></p>
 <article class="post">
     <div class="post-head">
-        <h1 id="关于博客 - BTS500">
+        <h1 id="Bitshares 开发者系列（1）—— Api接口的访问方式">
             
-	            关于博客 - BTS500
+	            Bitshares 开发者系列（1）—— Api接口的访问方式
             
         </h1>
         <div class="post-meta">
@@ -148,8 +148,8 @@
     
     <span class="categories-meta fa-wrap">
         <i class="fa fa-folder-open-o"></i>
-        <a href="/categories/关于博客">
-            关于博客
+        <a href="/categories/Bitshares">
+            Bitshares
         </a>
     </span>
     
@@ -158,8 +158,8 @@
         <i class="fa fa-tags"></i>
         <span class="tags-meta">
             
-            <a href="/tags/关于博客">
-               关于博客
+            <a href="/tags/Bitshares-ws">
+               Bitshares-ws
             </a>
             
         </span>
@@ -168,7 +168,7 @@
     
     <span class="fa-wrap">
         <i class="fa fa-clock-o"></i>
-        <span class="date-meta">2018/02/28</span>
+        <span class="date-meta">2018/03/01</span>
     </span>
 </div>
 
@@ -178,20 +178,52 @@
     
     <div class="post-body post-content">
         <blockquote>
-<p>我个人是一位长期的IT技术学习者，对软件开发有很浓厚的兴趣与爱好，虽然目前技术能力有限，但也学习和了解过很多的开发技术，很早就想建立一个自己的博客，把技术学习的过程和经验记录下来与自己分享，折腾了两天也终于把博客正式上线了，希望以后自己能更加努力，不忘初心。</p>
+<p>官方接口访问库 GitHub : <a href="https://github.com/bitshares/bitsharesjs-ws" target="_blank" rel="noopener">https://github.com/bitshares/bitsharesjs-ws</a><br>在阅读源码之前，最好先浏览一遍 Bitshares 官方公开的开发文档，虽然文档中对开发细节描述的不是很清楚，但也能对系统的通讯方式有个详细的了解。</p>
+</blockquote>
+<h3 id="Graphene-API-通讯方式"><a href="#Graphene-API-通讯方式" class="headerlink" title="Graphene API 通讯方式"></a>Graphene API 通讯方式</h3><hr>
+<p>Bitshares 系统共支持两种 API 调用方式：<br><br></p>
+<ul>
+<li>WebSocket Calls    -  长连接调用</li>
+<li>Remote Procedure Calls    -   HTTP 方式调用</li>
+</ul>
+<p>官方 GitHub 仓库提供的 GUI 钱包客户端 <code>bitshares-ui</code> 就是使用 WebSocket 方式通讯的，此钱包客户端是使用 <code>React</code> 开发的前端工程，然后使用 <code>Electron</code> 工具打包成了各平台可用的桌面客户端，这样做的优势在于，技术栈全部使用前端技术，可以做功能的一次性开发，然后使用相关的打包工具，进行跨平台的客户端打包，能够同时进行 <code>Web</code> 端和 <code>桌面客户端</code> 的开发。</p>
+<p>关于 <code>Bitshares</code> 官方的 GitHub 账号开源的几个项目，作一下简要的介绍，其中，<code>bitshares-ui</code> 项目依赖 <code>bitsharesjs</code> , 而 <code>bitsharesjs</code> 又依赖 <code>bitsharesjs-ws</code> 项目，它们之间的职责关系如下：<br><br></p>
+<ul>
+<li><code>bitshares-ui</code>    完整的钱包客户端项目，使用 React + Electron 技术栈，同时支持 Web 和 桌面客户端的打包。 </li>
+<li><code>bitsharesjs</code>     API业务工具，基层依赖 bitsharesjs-ws 项目进行API通讯，其模块内部封装并完成了大部分的业务API。</li>
+<li><code>bitsharesjs-ws</code>  针对 Graphene 系统定制的 WebSocket 接口访问通信工具，封装并定制了系统特有的API访问流程。</li>
+</ul>
+<h3 id="WebSocket-调用-API-数据结构"><a href="#WebSocket-调用-API-数据结构" class="headerlink" title="WebSocket 调用 API 数据结构"></a>WebSocket 调用 API 数据结构</h3><hr>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"> <span class="string">"id"</span>       : <span class="number">1</span>,            <span class="comment">// 调用标识</span></span><br><span class="line"> <span class="string">"method"</span>   : <span class="string">"call"</span>,</span><br><span class="line"> <span class="string">"params"</span>   :               <span class="comment">// 格式必须严格按照如下顺序传递</span></span><br><span class="line">    [         </span><br><span class="line">        <span class="number">0</span>,                  <span class="comment">//  API类型标识符</span></span><br><span class="line">        <span class="string">"get_accounts"</span>,     <span class="comment">//  接口名称</span></span><br><span class="line">        [[<span class="string">"1.2.0"</span>]]         <span class="comment">//  接口参数列表</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>id</code> 字段的作用是专门针对 WebSocket 方式的 API 定制的，我们知道 WebSocket 是长连接协议，像 Socket 编程一样，可以发送二进制和文本类型的数据。但是发送数据和返回数据之间是无序的，你可能发送的顺序是 A-api、B-api ，然而服务器端响应给你的顺序却可能是 B-result、A-result。<br>所以 API 在设计的时候特限定了一个 <code>id</code> 字段，当你发起 API 调用的时候指定一个唯一 <code>id</code> ，那么在响应结果里面，会把这个 <code>id</code> 再返回给你，你就可以根据这个 <code>id</code> 来区别响应结果应该怎么处理。</p>
 </blockquote>
 <blockquote>
-<p>此博客完全使用目前流行的前端技术构建，使用 Hexo 工具建立在 Github 平台之上，以后会记录一些我个人在技术学习的过程中，遇到的一些疑难杂症和解决方法，希望有缘看到的朋友多多指正交流。</p>
+<p>另外需要注意的就是 <code>params</code> 字段，此字段是一个数组类型，第一个元素代表 <code>API 标识符</code>，第二个元素代表要调用的 <code>API 名称</code>，第三个元素同样是一个数组类型，其数组中的每一个元素都将作为 API 的一个参数传递，并且应该注意参数的顺序与格式。</p>
+</blockquote>
+<h3 id="API-调用流程"><a href="#API-调用流程" class="headerlink" title="API 调用流程"></a>API 调用流程</h3><hr>
+<p>Bitshares 系统的完整客户端节点提供了一系列可以通过 WebSocket 方式访问的API，但根据官方文档中描述的API调用流程，应该首先有一个初始化的调用过程：<br><br></p>
+<ul>
+<li>1.首先应该登录到完整节点 :<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">"id"</span>:<span class="number">0</span>, <span class="string">"method"</span>:<span class="string">"call"</span>, <span class="string">"params"</span>:[<span class="number">1</span>, <span class="string">"login"</span>, [<span class="string">""</span>,<span class="string">""</span>]]&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><br></p>
+<ul>
+<li>2.然后获取指定类型的API标识 : <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 你可以动态的修改 “database” 属性，来获取不同的 API 类型请求标识。</span></span><br><span class="line">&#123;<span class="string">"id"</span>:<span class="number">0</span>, <span class="string">"method"</span>:<span class="string">"call"</span>, <span class="string">"params"</span>:[<span class="number">1</span>, <span class="string">"database"</span>, []]&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 此次请求调用返回结果里面的 "result" 值，就是 "database" 类型 API 的标识符。 </span></span><br><span class="line">&#123;<span class="string">"id"</span>:<span class="number">2</span>, <span class="string">"result"</span>:<span class="number">2</span>&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><br></p>
+<ul>
+<li>3.你可以多次的进行第二步操作，拿到不同类型的 API 标识符，最后只需要之前介绍过的 API 数据结构指定好 <code>id</code> 与 <code>params</code> 参数格式，即可调用所有公开的 API 接口。</li>
+</ul>
+<h3 id="API-返回结果数据格式"><a href="#API-返回结果数据格式" class="headerlink" title="API 返回结果数据格式"></a>API 返回结果数据格式</h3><hr>
+<blockquote>
+<p>调用成功 JSON 格式 :<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"id"</span>      : <span class="number">1</span>,    <span class="comment">//  调用 API 时传递的调用标识。</span></span><br><span class="line">  <span class="string">"result"</span>  : ...data...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 </blockquote>
 <blockquote>
-<p>另外一个建立此博客的原因，目前正在学习一个区块链项目（比特股） —— Bitshares 的应用层开发，在学习的过程中发现，此区块链项目的官方文档非常的简陋与残缺，并不能让第三方的技术人员作为参考资料进行基于 Bitshares 的项目开发。</p>
+<p>调用失败 JSON 格式 :<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"id"</span>    : <span class="number">0</span>,    <span class="comment">// 调用 API 时传递的调用标识。</span></span><br><span class="line">  <span class="string">"data"</span>  : &#123;</span><br><span class="line">    <span class="string">"code"</span>  : <span class="number">1</span>,</span><br><span class="line">    <span class="string">"error"</span> : &#123;</span><br><span class="line">      <span class="string">"code"</span>    : error-code,</span><br><span class="line">      <span class="string">"name"</span>    : <span class="string">" .. name of exception .."</span></span><br><span class="line">      <span class="string">"message"</span> : <span class="string">" .. message of exception .."</span>,</span><br><span class="line">      <span class="string">"stack"</span>   : [ .. stack trace .. ],</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 </blockquote>
-<blockquote>
-<p>因为 Bitshares 项目内部的有很多的属性和复杂的交易流程，然而在官方文档上并没有详细介绍和流程描述，只是简单的列出了一些不完整的API列表，所以我有想法在我个人学习的过程中，总结出来一些非官方资料来给其他人参考，也作为我自己的学习笔记使用。</p>
-</blockquote>
-<blockquote>
-<p>在技术的学习途中，也希望能够结交到一些对 Bitshares 项目同样有兴趣的朋友，一起交流学习经验并整理资料，有想法的可以加QQ群：146302588。</p>
-</blockquote>
+<p>API 是否调用成功，可以简单的通过判断结果是否包含 <code>resutl</code> 字段来区分，假如包含 <code>result</code> 字段就可以认为调用成功，不同 API 有不同的 <code>result</code> 结构，届时根据 API 文档，分别进行解析处理即可。</p>
 
     </div>
 
@@ -209,11 +241,32 @@
 
 <div class="article-nav prev-next-wrap clearfix">
     
-        <a href="/2018/03/01/WebStorm-快捷键大全/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
+        <a href="/2018/03/01/WebStorm集成GitBash/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
     
+    
+        <a href="/2018/03/01/WebStorm-快捷键大全/" class="next-post btn btn-default">下一篇&nbsp;&nbsp;《&nbsp;WebStorm 快捷键大全&nbsp;》<i class="fa fa-angle-right fa-fw"></i></a>
     
 </div>
 
+
+    <div id="comments">
+        
+	<script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"BTS500",
+        repo:"bts500.github.io",
+        oauth: {
+          client_id:"d2160c7602f91462720e",
+          client_secret:"7a23222b1d3c2cde5a1c77fb777841e7da71e736"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+</script>
+
+    </div>
 
 
 
